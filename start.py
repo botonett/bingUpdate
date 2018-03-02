@@ -118,6 +118,6 @@ if __name__ == "__main__":
     from subprocess import call
     #call(["CScript.exe", "C:\\Users\\bing\\Desktop\\Bing2.0\\script.vbs"])
     os.system("run.bat")
-    
+    quit()    
 
 
