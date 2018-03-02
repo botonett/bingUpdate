@@ -1,5 +1,3 @@
-from github import Github
-from appJar import gui
 import os
 import shutil
 import fileinput
@@ -7,6 +5,7 @@ import time
 from shutil import copyfile
 import pip
 def primaryUpdate():
+    from github import Github
     try:
         account,password = getAccount() 
         #create a Github instance:
