@@ -26,7 +26,8 @@ def primaryUpdate():
             os.system('rmdir /S /Q "{}"'.format("C:\\Users\\bing\\Desktop\\Bing2.0\\BingGUI"))
             time.sleep(1)
             os.system('git clone "{}"'.format("https://github.com/botonett/BingGUI"))
-            time.sleep(1)
+            time.sleep(5)
+            os.system("moveGUI.bat")
             updateCurrentVersion(serverVersion)
             return "Update GUI Sucessful"
         else:
@@ -58,7 +59,8 @@ def secondaryUpdate():
             os.system('git clone "{}"'.format("https://github.com/botonett/bingAuto"))
             time.sleep(1)
             updateCurrentVersion2(serverVersion)
-            time.sleep(1)
+            time.sleep(5)
+            os.system("moveAuto.bat")
             return "Update bingAUTO Sucessful"
         else:
             return "No bingAUTO Update Available"
