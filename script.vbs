@@ -1,5 +1,4 @@
-set w = CreateObject("WScript.Shell")
+set shell=createobject("wscript.shell")
 
-W.Run chr(34) & "run.bat" & chr(34), 0
+shell.Run "run.bat"
 
-set w= Nothing

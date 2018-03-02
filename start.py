@@ -118,10 +118,9 @@ if __name__ == "__main__":
             time.sleep(1)
     print(autoUpdate)
     from subprocess import call
-    #call(["CScript.exe", "C:\\Users\\bing\\Desktop\\Bing2.0\\script.vbs"])
-    os.system("run.bat")
+    call(["CScript.exe", "C:\\Users\\bing\\Desktop\\Bing2.0\\script.vbs"])
+    #os.system("run.bat")
     exit(0)
-
     
 
 
