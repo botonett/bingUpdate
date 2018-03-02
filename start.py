@@ -5,7 +5,7 @@ import shutil
 import fileinput
 import time
 from shutil import copyfile
-
+import pip
 def primaryUpdate():
     try:
         account,password = getAccount() 
@@ -102,7 +102,25 @@ def getAccount():
                  profile.append(line.strip())
     return profile[0],profile[1]
 
+def update():
+    try:
+        with open("packages.txt",'r') as curVer:
+            for line in curVer:
+                pip.main(['install', line.strip()])
+            curVer.close()
+        return "Done"
+    except Exception as E:
+        print(str(E))
+        return "Failed!"
+
 if __name__ == "__main__":
+    updatePackage = update()
+    while(True):
+        if((updatePackage == "Done") or (updatePackage == "Failed!")):
+            break
+        else:
+            sleep(1)
+    print(updatePackage)
     guiUpdate = primaryUpdate()
     while(True):
         if((guiUpdate != "Update GUI Sucessful") or (guiUpdate != "No GUI Update Available") or (guiUpdate != "An Error Has Occured While Attempting Update.")):
