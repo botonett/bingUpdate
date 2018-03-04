@@ -173,6 +173,7 @@ def setEdgeDriver():
             for line in pf:
                  supportedSystems.append(line.strip())
     currentSystem = platform.version().split(".")[2]
+    print("Current Windows 10 Build: "str(currentSystem))
     if(currentSystem in supportedSystems):
         cdir = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingUpdate\\"
         src = cdir + str(currentSystem) + '.exe'
