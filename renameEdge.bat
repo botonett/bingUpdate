@@ -1,0 +1,1 @@
+rename C:\Users\bing\Desktop\Bing2.0\bingAuto\16299.exe MicrosoftWebDriver.exe
