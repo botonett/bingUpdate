@@ -135,6 +135,7 @@ if __name__ == "__main__":
         else:
             time.sleep(1)
     print(autoUpdate)
+    #testGUI
     from subprocess import call
     call(["CScript.exe", "script.vbs"])
     #os.system("run.bat")
