@@ -1,0 +1,1 @@
+xcopy C:\Users\bing\Desktop\Bing2.0\bingUpdate\favicon.ico C:\Users\bing\AppData\Local\Programs\Python\Python35\Lib\site-packages\appJar\resources\icons /Y

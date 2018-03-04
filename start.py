@@ -112,14 +112,16 @@ def update():
     except Exception as E:
         print(str(E))
         return "Failed!"
-
+def setIcon():
+    os.system("setIcon.bat")
+    return "Done"
 if __name__ == "__main__":
     updatePackage = update()
     while(True):
         if((updatePackage == "Done") or (updatePackage == "Failed!")):
             break
         else:
-            sleep(1)
+             time.sleep(1)
     print(updatePackage)
     guiUpdate = primaryUpdate()
     while(True):
@@ -136,8 +138,15 @@ if __name__ == "__main__":
             time.sleep(1)
     print(autoUpdate)
     #testGUI
+    setIcon = setIcon()
+    while(True):
+        if(setIcon == "Done"):
+            break
+        else:
+             time.sleep(1)
     from subprocess import call
     call(["CScript.exe", "script.vbs"])
+    #C:\Users\bing\AppData\Local\Programs\Python\Python35\Lib\site-packages\appJar\resources\icons
     #os.system("run.bat")
     exit(0)
     
