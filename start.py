@@ -37,6 +37,7 @@ def primaryUpdate():
         return "An Error Has Occured While Attempting Update."
 
 def secondaryUpdate():
+    from github import Github
     try:
         account,password = getAccount()
         #create a Github instance:
