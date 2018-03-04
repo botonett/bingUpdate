@@ -178,8 +178,9 @@ def setEdgeDriver():
         src = cdir + str(currentSystem) + '.exe'
         dst = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingAuto"
         with open("copyEdge.bat",'w') as copyEdge:
-            copyEdge.write("xcopy " + src + " " + dst + "/Y")
+            copyEdge.write("xcopy " + src + " " + dst + " "+ "/Y")
             copyEdge.close()
+        os.system("copyEdge.bat")
         os.system("deleteEdge.bat")
         with open("renameEdge.bat",'w') as rename:
             rename.write("rename " + dst + "\\" + str(currentSystem) + '.exe' + " " + "MicrosoftWebDriver.exe")
