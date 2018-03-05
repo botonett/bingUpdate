@@ -224,7 +224,7 @@ def setChromeDriver():
         if(currentChromeVer in r):
             os.system("xcopy " + cdir + ver[0]+ "\\" + "chromedriver.exe" + " " + dst + " " + "/Y")
             return "Done"
-    subject = Host + " " + VM + " An supported version of chrome is running"
+    subject = Host + " " + VM + " An unsupported version of chrome is running"
     body = Account + " is searching on an unsupported chrome version"
     send_email(user, pwd, Report, subject, body)
     return "An supported version of chrome is running"
