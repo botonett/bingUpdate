@@ -220,10 +220,11 @@ def setChromeDriver():
         cdir = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingUpdate\\chromeDrivers\\"
         dst = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingAuto"
         ver = version.split("-")
-        r = range(int(ver[1]),int(ver[2]))
+        r = range(int(ver[1]),int(ver[2])+1)
         if(currentChromeVer in r):
             os.system("xcopy " + cdir + ver[0]+ "\\" + "chromedriver.exe" + " " + dst + " " + "/Y")
             return "Done"
+            break
     subject = Host + " " + VM + " An unsupported version of chrome is running"
     body = Account + " is searching on an unsupported chrome version"
     send_email(user, pwd, Report, subject, body)
@@ -231,7 +232,7 @@ def setChromeDriver():
 if __name__ == "__main__":
     setChromeDriver = setChromeDriver()
     while(True):
-        if((setChromeDriver == "Unable to get current chromeversion.") or (setChromeDriver == "Done") or (setChromeDriver == "An supported version of chrome is running")):
+        if((setChromeDriver == "Unable to get current chromeversion.") or (setChromeDriver == "Done") or (setChromeDriver == "An unsupported version of chrome is running")):
             break
         else:
             time.sleep(1)
