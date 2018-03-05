@@ -229,7 +229,17 @@ def setChromeDriver():
     body = Account + " is searching on an unsupported chrome version"
     send_email(user, pwd, Report, subject, body)
     return "An supported version of chrome is running"
+def updatePip():
+    os.system("pip install --upgrade pip")
+    return "Done"
 if __name__ == "__main__":
+    updatePip = updatePip()
+    while(True):
+        if(updatePip == "Done"):
+            break
+        else:
+             time.sleep(1)
+    print("Done with pip")
     setChromeDriver = setChromeDriver()
     while(True):
         if((setChromeDriver == "Unable to get current chromeversion.") or (setChromeDriver == "Done") or (setChromeDriver == "An unsupported version of chrome is running")):
