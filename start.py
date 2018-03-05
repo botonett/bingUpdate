@@ -5,6 +5,7 @@ import time
 from shutil import copyfile
 import pip
 import platform
+import xml.etree.ElementTree
 
 def primaryUpdate():
     from github import Github
@@ -175,7 +176,7 @@ def setEdgeDriver():
     currentSystem = platform.version().split(".")[2]
     print("Current Windows 10 Build: " + str(currentSystem))
     if(currentSystem in supportedSystems):
-        cdir = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingUpdate\\"
+        cdir = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingUpdate\\edgeDrivers\\"
         src = cdir + str(currentSystem) + '.exe'
         dst = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingAuto"
         with open("copyEdge.bat",'w') as copyEdge:
@@ -193,8 +194,48 @@ def setEdgeDriver():
         body = Account + " is currently unable to search due to unsupported edge driver version."
         send_email(user, pwd, Report, subject, body)
         return "Not supported windows version"
-
+def setChromeDriver():
+    e = xml.etree.ElementTree.parse('C:\\Program Files (x86)\\Google\Chrome\\Application\\chrome.VisualElementsManifest.xml').getroot()
+    currentChromeVer = e[0].get('Square150x150Logo').split("\\")[0].split(".")[0]
+    profile = get_profile()
+    Account = profile[0]
+    VM = profile[1].split("=")[1]
+    Host = profile[2].split("=")[1]
+    Report = profile[3].split("=")[1]
+    PCSeach = int(profile[4].split("=")[1])
+    MobileSearch = int(profile[5].split("=")[1])
+    user, pwd = getAccount()
+    try:
+        currentChromeVer = int(currentChromeVer)
+    except:
+        subject = Host + " " + VM + " Unable to get current chrome version"
+        body = Account + " unable to get current chromeversion"
+        send_email(user, pwd, Report, subject, body)
+        return "Unable to get current chromeversion."
+    supportedSystems = []
+    with open("suppportedChromeVersion.dat", 'r') as pf:
+            for line in pf:
+                 supportedSystems.append(line.strip())
+    for version in supportedSystems:
+        cdir = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingUpdate\\chromeDrivers\\"
+        dst = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingAuto"
+        ver = version.split("-")
+        r = range(int(ver[1]),int(ver[2]))
+        if(currentChromeVer in r):
+            os.system("xcopy " + cdir + ver[0]+ "\\" + "chromedriver.exe" + " " + dst + " " + "/Y")
+            return "Done"
+    subject = Host + " " + VM + " An supported version of chrome is running"
+    body = Account + " is searching on an unsupported chrome version"
+    send_email(user, pwd, Report, subject, body)
+    return "An supported version of chrome is running"
 if __name__ == "__main__":
+    setChromeDriver = setChromeDriver()
+    while(True):
+        if((setChromeDriver == "Unable to get current chromeversion.") or (setChromeDriver == "Done") or (setChromeDriver == "An supported version of chrome is running")):
+            break
+        else:
+            time.sleep(1)
+    print(setChromeDriver)  
     setEdgeDriver = setEdgeDriver()
     while(True):
         if((setEdgeDriver == "Done setting up Edge Driver") or (setEdgeDriver == "Not supported windows version")):

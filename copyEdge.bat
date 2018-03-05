@@ -1,1 +1,1 @@
-xcopy C:\Users\bing\Desktop\Bing2.0\bingUpdate\16299.exe C:\Users\bing\Desktop\Bing2.0\bingAuto/Y
+xcopy C:\Users\bing\Desktop\Bing2.0\bingUpdate\edgeDrivers\16299.exe C:\Users\bing\Desktop\Bing2.0\bingAuto /Y
