@@ -6,6 +6,14 @@ from shutil import copyfile
 import pip
 import platform
 import xml.etree.ElementTree
+from unipath import Path
+import sys
+
+current_user = os.getlogin()
+current_working_dir, filename = os.path.split(os.path.abspath(__file__))
+home = Path(current_working_dir).parent
+sys.path.append(home)
+os.chdir(current_working_dir)
 
 def primaryUpdate():
     from github import Github
@@ -23,13 +31,13 @@ def primaryUpdate():
                 serverVersion =temp[0].total
         if(serverVersion != getCurrentVersion()):  
             #os.system('rmdir /S /Q "{}"'.format(directory))
-            os.system('cd "{}"'.format("C:\\Users\\bing\\Desktop\\Bing2.0"))
+            os.system('cd "{}"'.format(home))
             time.sleep(1)
-            os.system('rmdir /S /Q "{}"'.format("C:\\Users\\bing\\Desktop\\Bing2.0\\BingGUI"))
+            os.system('rmdir /S /Q "{}"'.format(home+"\\BingGUI"))
             time.sleep(1)
             os.system('git clone "{}"'.format("https://github.com/botonett/BingGUI"))
             time.sleep(5)
-            os.system("moveGUI.bat")
+            os.system("move " + current_working_dir+"\\BingGUI " + home)
             time.sleep(1)
             updateCurrentVersion(serverVersion)
             return "Update GUI Sucessful"
@@ -56,15 +64,15 @@ def secondaryUpdate():
                 serverVersion =temp[0].total
         if(serverVersion != getCurrentVersion2()):  
             #os.system('rmdir /S /Q "{}"'.format(directory))
-            os.system('cd "{}"'.format("C:\\Users\\bing\\Desktop\\Bing2.0"))
+            os.system('cd "{}"'.format(home))
             time.sleep(1)
-            os.system('rmdir /S /Q "{}"'.format("C:\\Users\\bing\\Desktop\\Bing2.0\\bingAuto"))
+            os.system('rmdir /S /Q "{}"'.format(home+"\\bingAuto"))
             time.sleep(1)
             os.system('git clone "{}"'.format("https://github.com/botonett/bingAuto"))
             time.sleep(1)
             updateCurrentVersion2(serverVersion)
             time.sleep(5)
-            os.system("moveAuto.bat")
+            os.system("move " + current_working_dir+"\\bingAuto " + home)
             time.sleep(1)
             return "Update bingAUTO Sucessful"
         else:
@@ -75,7 +83,7 @@ def secondaryUpdate():
 
 def getCurrentVersion():
     currentVersion = 0
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\start-tracker.dat",'r') as curVer:
+    with open(home+"\\data\\start-tracker.dat",'r') as curVer:
         for line in curVer:
             currentVersion = int(line.strip())
         curVer.close()
@@ -83,31 +91,31 @@ def getCurrentVersion():
 
 def getCurrentVersion2():
     currentVersion = 0
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\version.dat",'r') as curVer:
+    with open(home+"\\data\\version.dat",'r') as curVer:
         for line in curVer:
             currentVersion = int(line.strip())
         curVer.close()
     return currentVersion
 def updateCurrentVersion2(version):
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\version.dat",'w') as curVer:
+    with open(home+"\\data\\version.dat",'w') as curVer:
         curVer.write(str(version))
         curVer.close()
         
 def updateCurrentVersion(version):
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\start-tracker.dat",'w') as curVer:
+    with open(home+"\\data\\start-tracker.dat",'w') as curVer:
         curVer.write(str(version))
         curVer.close()
     
 def getAccount():
     profile = []
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\gitAccount.dat", 'r') as pf:
+    with open(home+"\\data\\gitAccount.dat", 'r') as pf:
             for line in pf:
                  profile.append(line.strip())
     return profile[0],profile[1]
 
 def getMailAccount():
     profile = []
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\reportEngine.dat", 'r') as pf:
+    with open(home+"\\data\\reportEngine.dat", 'r') as pf:
             for line in pf:
                  profile.append(line.strip())
     return profile[0],profile[1]
@@ -123,7 +131,7 @@ def update():
         print(str(E))
         return "Failed!"
 def setIcon():
-    os.system("setIcon.bat")
+    os.system("xcopy " + home +"\\bingUpdate\\favicon.ico " + "C:\\Users\\"+current_user+"\\AppData\\Local\\Programs\\Python\\Python35\\Lib\\site-packages\\appJar\\resources\\icons /Y")
     return "Done"
 
 #send email function
@@ -152,10 +160,10 @@ def send_email(user, pwd, recipient, subject, body):
         print("failed to send mail")
 def get_profile():
     profile = []
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\profile.dat", 'r') as pf:
+    with open(home+"\\data\\profile.dat", 'r') as pf:
             for line in pf:
                  profile.append(line.strip())
-    with open("C:\\Users\\bing\\Desktop\\Bing2.0\\data\\shutdown.dat", 'r') as pf:
+    with open(home+"\\data\\shutdown.dat", 'r') as pf:
             for line in pf:
                  profile.append(line.strip())
     return profile      
@@ -176,14 +184,15 @@ def setEdgeDriver():
     currentSystem = platform.version().split(".")[2]
     print("Current Windows 10 Build: " + str(currentSystem))
     if(currentSystem in supportedSystems):
-        cdir = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingUpdate\\edgeDrivers\\"
+        cdir = home+"\\bingUpdate\\edgeDrivers\\"
         src = cdir + str(currentSystem) + '.exe'
-        dst = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingAuto"
+        dst = home+"\\bingAuto"
         with open("copyEdge.bat",'w') as copyEdge:
             copyEdge.write("xcopy " + src + " " + dst + " "+ "/Y")
             copyEdge.close()
         os.system("copyEdge.bat")
-        os.system("deleteEdge.bat")
+        #os.system("deleteEdge.bat")
+        os.system("del "+ home +"\\bingAuto\\MicrosoftWebDriver.exe /Q")
         with open("renameEdge.bat",'w') as rename:
             rename.write("rename " + dst + "\\" + str(currentSystem) + '.exe' + " " + "MicrosoftWebDriver.exe")
             rename.close()
@@ -217,8 +226,8 @@ def setChromeDriver():
             for line in pf:
                  supportedSystems.append(line.strip())
     for version in supportedSystems:
-        cdir = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingUpdate\\chromeDrivers\\"
-        dst = "C:\\Users\\bing\\Desktop\\Bing2.0\\bingAuto"
+        cdir = home+"\\bingUpdate\\chromeDrivers\\"
+        dst = home+"\\bingAuto"
         ver = version.split("-")
         r = range(int(ver[1]),int(ver[2])+1)
         if(currentChromeVer in r):
@@ -282,6 +291,14 @@ if __name__ == "__main__":
             break
         else:
              time.sleep(1)
+    #set run2.bat to current dir
+    with open("run2.bat",'w') as setcur:
+            setcur.write("ping 127.0.0.1 -n 5 > nul")
+            setcur.write("\n")
+            setcur.write("cd " + home + "\\bingUpdate")
+            setcur.write("\n")
+            setcur.write("python start.py")
+            setcur.close()
     from subprocess import call
     call(["CScript.exe", "script.vbs"])
     #C:\Users\bing\AppData\Local\Programs\Python\Python35\Lib\site-packages\appJar\resources\icons
