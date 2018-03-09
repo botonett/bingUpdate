@@ -263,6 +263,7 @@ if __name__ == "__main__":
         else:
             time.sleep(1)
     print(setEdgeDriver)     
+    """
     updatePackage = update()
     while(True):
         if((updatePackage == "Done") or (updatePackage == "Failed!")):
@@ -270,6 +271,7 @@ if __name__ == "__main__":
         else:
              time.sleep(1)
     print(updatePackage)
+    """
     guiUpdate = primaryUpdate()
     while(True):
         if((guiUpdate != "Update GUI Sucessful") or (guiUpdate != "No GUI Update Available") or (guiUpdate != "An Error Has Occured While Attempting Update.")):
