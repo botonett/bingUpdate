@@ -251,7 +251,7 @@ if __name__ == "__main__":
     print("Done with pip")
     setChromeDriver = setChromeDriver()
     while(True):
-        if((setChromeDriver == "Unable to get current chromeversion.") or (setChromeDriver == "Done") or (setChromeDriver == "An unsupported version of chrome is running")):
+        if((setChromeDriver == "Unable to get current chromeversion.") or (setChromeDriver == "Done") or (setChromeDriver == "An supported version of chrome is running")):
             break
         else:
             time.sleep(1)
