@@ -3,6 +3,7 @@ import shutil
 import fileinput
 import time
 from shutil import copyfile
+from shutil import move
 import pip
 import platform
 import xml.etree.ElementTree
@@ -203,6 +204,16 @@ def setEdgeDriver():
         body = Account + " is currently unable to search due to unsupported edge driver version."
         send_email(user, pwd, Report, subject, body)
         return "Not supported windows version"
+def chromeVer():
+    try:
+        data = []
+        with open(home+"\\bingUpdate\\suppportedChromeVersion.dat", 'r') as pf:
+            for line in pf:
+                data.append(line.strip())
+        return data[0].split("-")[0]
+    except:
+        return "failed"
+    
 def setChromeDriver():
     e = xml.etree.ElementTree.parse('C:\\Program Files (x86)\\Google\Chrome\\Application\\chrome.VisualElementsManifest.xml').getroot()
     currentChromeVer = e[0].get('Square150x150Logo').split("\\")[0].split(".")[0]
@@ -241,6 +252,56 @@ def setChromeDriver():
 def updatePip():
     os.system("pip install --upgrade pip")
     return "Done"
+
+def lastestChromeVer():
+    import requests
+    url = "https://chromedriver.storage.googleapis.com/LATEST_RELEASE"
+    data = (requests.get(url)).text.strip()
+    url2 = "https://chromedriver.storage.googleapis.com/"+data+"/notes.txt"
+    data2 = (requests.get(url2)).text.strip()
+    data2ver = data2.split("\n")[0].strip("-").split(" ")[1].strip("v")
+    data2support = data2.split("\n")[1].split(" ")[2].strip("v")
+    if(data == data2ver):
+        return data2ver, data2support
+    else:
+        return "error while checking lastest chrome version."
+def downloadChrome(ver):
+    try:
+        import requests, zipfile, io
+        zip_file_url = "https://chromedriver.storage.googleapis.com/"+ ver +"/chromedriver_win32.zip"
+        r = requests.get(zip_file_url)
+        if(r.ok):
+            z = zipfile.ZipFile(io.BytesIO(r.content))
+            z.extractall(current_working_dir)
+        if not os.path.exists(current_working_dir+ "\\"+ "chromeDrivers\\"+ver):
+            try:
+                os.makedirs(current_working_dir+ "\\"+ "chromeDrivers\\"+ver)
+                move(current_working_dir+"\\chromedriver.exe",current_working_dir+"\\chromeDrivers\\"+ver)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+            except Exception as E:
+                print(str(E))
+                os.remove(current_working_dir+"\\chromedriver.exe")
+        return "done"
+    except Exception as E:
+        print("failed to download lastest chrome driver verion with error: " + str(E))
+        return "failed"
+def updateChromeConfig(ver,sup):
+    try:
+        newLine = ver+"-"+sup+"\n"
+        data = []
+        data.append(newLine)
+        with open(home+"\\bingUpdate\\suppportedChromeVersion.dat", 'r') as pf:
+            for line in pf:
+                data.append(line)
+        with open(home+"\\bingUpdate\\suppportedChromeVersion.dat", 'w') as ud:
+            for line in data:
+                ud.write(line)
+        return "done"
+    except Exception as E:
+        print("failed to update chome config with error: " + str(E))
+        return "failed"
 if __name__ == "__main__":
     updatePip = updatePip()
     while(True):
@@ -249,6 +310,16 @@ if __name__ == "__main__":
         else:
              time.sleep(1)
     print("Done with pip")
+
+    ver,sup =lastestChromeVer()
+    curChromeVer = chromeVer()
+    if(curChromeVer != "failed"):
+        if(ver != curChromeVer):
+            stat = downloadChrome(ver)
+            updateChromeConfig(ver,sup)
+    else:
+        print("failed to update chrome driver")
+    print("Done setting up chrome driver.")
     setChromeDriver = setChromeDriver()
     while(True):
         if((setChromeDriver == "Unable to get current chromeversion.") or (setChromeDriver == "Done") or (setChromeDriver == "An unsupported version of chrome is running")):
