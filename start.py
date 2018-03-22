@@ -9,7 +9,8 @@ import platform
 import xml.etree.ElementTree
 from unipath import Path
 import sys
-
+import requests
+from bs4 import BeautifulSoup
 current_user = os.getlogin()
 current_working_dir, filename = os.path.split(os.path.abspath(__file__))
 home = Path(current_working_dir).parent
@@ -200,9 +201,20 @@ def setEdgeDriver():
         os.system("renameEdge.bat")
         return "Done setting up Edge Driver"
     else:
-        subject = Host + " " + VM + " Is currently running unsupported windows 10 version."
-        body = Account + " is currently unable to search due to unsupported edge driver version."
+        print("updating edge driver!")
+        subject = Host + " " + VM + " updated edge driver"
+        body = Account + " " + "is attempting to update edge driver"
         send_email(user, pwd, Report, subject, body)
+        edgeUpdate = getEdgeBuild()
+        for item in edgeUpdate:
+            if(item[0] == currentSystem):
+                download  = download_file(item[1])
+                temp = item[0]+".exe"
+                move(home+"\\bingUpdate\\"+download,home+"\\bingUpdate\\"+temp)
+                move(home+"\\bingUpdate\\"+temp,home+"\\bingUpdate\\edgeDrivers")
+                stat = updateEdgeConfig(item[0])
+                if(stat != "failed"):
+                    setEdgeDriver()
         return "Not supported windows version"
 def chromeVer():
     try:
@@ -287,6 +299,7 @@ def downloadChrome(ver):
     except Exception as E:
         print("failed to download lastest chrome driver verion with error: " + str(E))
         return "failed"
+
 def updateChromeConfig(ver,sup):
     try:
         newLine = ver+"-"+sup+"\n"
@@ -302,6 +315,55 @@ def updateChromeConfig(ver,sup):
     except Exception as E:
         print("failed to update chome config with error: " + str(E))
         return "failed"
+
+def updateEdgeConfig(ver):
+    try:
+        newLine = ver+"\n"
+        data = []
+        data.append(newLine)
+        with open(home+"\\bingUpdate\\supportedSystems.dat", 'r') as pf:
+            for line in pf:
+                data.append(line)
+        with open(home+"\\bingUpdate\\supportedSystems.dat", 'w') as ud:
+            for line in data:
+                ud.write(line)
+        return "done"
+    except Exception as E:
+        print("failed to update edge config with error: " + str(E))
+        return "failed"
+    
+def download_file(url):
+    try:
+        local_filename = url.split('/')[-1]
+        # NOTE the stream=True parameter
+        r = requests.get(url, stream=True)
+        with open(home+"\\bingUpdate\\"+local_filename, 'wb') as f:
+            for chunk in r.iter_content(chunk_size=1024): 
+                if chunk: # filter out keep-alive new chunks
+                    f.write(chunk)
+        return local_filename
+    except Exception as E:
+        print("failed to download requested file with error: " + str(E))
+        return "failed"
+
+def getEdgeBuild():
+    try:
+        url = "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/"
+        data = (requests.get(url)).text
+        soup = BeautifulSoup(data, 'html.parser')
+        mydivs = soup.findAll("ul", {"class": "bare subsection__body driver-downloads"})
+        data = []
+        for ul in mydivs:
+            for li in ul.findAll('li'):
+                temp = li.a.get('aria-label').split(" ")[-1]+ " " + str(li.a.get('href'))
+                if(temp.split(" ")[0]!= "Insiders"):
+                    data.append(temp.split(" "))
+        return data
+    except Exception as E:
+        print("failed to get latest edge build with error: " + str(E))
+        return "failed"
+
+
 if __name__ == "__main__":
     updatePip = updatePip()
     while(True):
